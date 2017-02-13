@@ -40,7 +40,7 @@ void add_Renglon(Renglon ** head, Palabra * val, int renglon) {
         (*head)->renglon=renglon;
         (*head)->siguiente=NULL;
     }else{
-        Renglon *current=(*head)->siguiente;
+        Renglon *current=(*head);
         while(current->siguiente!=NULL){
             current=current->siguiente;
         }
@@ -108,7 +108,6 @@ int main() {
             add_Lista(&cabeza,pal);
             //printf("palabra %d = %s\n", i, palabras[i]);
         }
-        //print_Palabra(cabeza);
         add_Renglon(&head,cabeza,j);
         print_Renglon(head);
         j++;
