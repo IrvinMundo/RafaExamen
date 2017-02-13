@@ -44,9 +44,9 @@ void add_Renglon(Renglon ** head, Palabra * val, int renglon) {
         while(current->siguiente!=NULL){
             current=current->siguiente;
         }
-        (*current).siguiente=NULL;
-        (*current).renglon=renglon;
         (*current).pal=val;
+        (*current).renglon=renglon;
+        (*current).siguiente=NULL;
     }
 }
 
@@ -99,6 +99,7 @@ int main() {
         char palabras[100][21];
         int len = split(linea,palabras);
         int i;
+        Palabra * cabeza=NULL;
         for (i = 0; i < len; i++) {
             Palabra * pal = (Palabra *) malloc(sizeof(Palabra));
             pal->siguiente = NULL;
