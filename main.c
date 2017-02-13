@@ -3,7 +3,7 @@
 #include <string.h>
 
 #define max_entradas 500
-struct Entrada {
+typedef struct Entrada {
     char palabra[20];     /* la palabra */
     int lineas[10];   /* el número de línea en el que aparece */
     int total;        /* total de apariciones de la palabra en el texto */
@@ -33,17 +33,15 @@ int split(char *str, char palabras[][21]) {
     return ++i;
 }
 
-void add_Lista( Palabra ** head,  Palabra * val) {
+void add_Lista(Palabra ** head,  Palabra * val) {
     if(*head==NULL){
         (*head)=val;
     }else{
 
         Palabra *current=*head;
-
         while(current->siguiente!=NULL){
             current=current->siguiente;
         }
-
         current->siguiente=val;
         val->siguiente=NULL;
     }
@@ -55,21 +53,31 @@ void printWords(char palabras[][21]){
     }
 }
 
+typedef struct Entrada Entrada;
 
-
-typedef  Entrada Entrada;
 int main() {
     Entrada entradas[max_entradas] = {{"",{0},0}}; /* inicializa el arreglo */
     char *linea;
     size_t tamanio;
-     Palabra *pal =( Palabra*) malloc(sizeof(Palabra));
+
+    Palabra * cabeza=NULL;
+    Palabra * pal=NULL;
+
+    int j=0;
+
     while (getline(&linea,&tamanio, stdin) != -1) {
         char palabras[100][21];
         int len = split(linea,palabras);
         int i;
-        for (i = 0; i < len; i++)
-
-            printf("palabra %d = %s\n",i,palabras[i]);
+        for (i = 0; i < len; i++) {
+            pal = (Palabra *) malloc(sizeof(Palabra));
+            pal->siguiente = NULL;
+            pal->numerocolumna = i;
+            pal->numerofila = j;
+            add_Lista(&cabeza,pal);
+            printf("palabra %d = %s\n", i, palabras[i]);
+        }
+        j++;
     }
 
 
