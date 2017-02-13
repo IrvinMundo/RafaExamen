@@ -3,16 +3,16 @@
 #include <string.h>
 
 #define max_entradas 500
-typedef struct Entrada {
+struct Entrada {
     char palabra[20];     /* la palabra */
     int lineas[10];   /* el número de línea en el que aparece */
     int total;        /* total de apariciones de la palabra en el texto */
 };
 
 typedef struct Renglon{
-    char* name;
     int renglon;
-    struct Palabra* head;
+    struct Palabra* pal;
+    struct Renglon* siguiente;
 } Renglon;
 
 typedef struct Palabra{
@@ -33,24 +33,55 @@ int split(char *str, char palabras[][21]) {
     return ++i;
 }
 
+void add_Renglon(Renglon ** head, Palabra * val, int renglon) {
+    if(*head==NULL){
+        (*head)=(Renglon *) malloc(sizeof(Renglon));
+        (*head)->pal=val;
+        (*head)->renglon=renglon;
+        (*head)->siguiente=NULL;
+    }else{
+        Renglon *current=(*head)->siguiente;
+        while(current->siguiente!=NULL){
+            current=current->siguiente;
+        }
+        (*current).siguiente=NULL;
+        (*current).renglon=renglon;
+        (*current).pal=val;
+    }
+}
+
 void add_Lista(Palabra ** head,  Palabra * val) {
     if(*head==NULL){
         (*head)=val;
     }else{
-
         Palabra *current=*head;
         while(current->siguiente!=NULL){
             current=current->siguiente;
         }
         current->siguiente=val;
-        val->siguiente=NULL;
     }
 }
 
-void printWords(char palabras[][21]){
-    for(int i=0;i<10;i++){
+void print_Palabra(Palabra * head) {
+    Palabra * current = head;
 
+    while (current != NULL) {
+        printf("%s en el columna %d en la fila %d\n", current->palabra,current->numerocolumna, current->numerofila);
+        current = current->siguiente;
     }
+    printf("-----------\n");
+}
+
+void print_Renglon(Renglon * head) {
+    Renglon * current = head;
+
+    while (current != NULL) {
+        Palabra * pal=current->pal;
+        printf("Estoy en el renglon %d\n", current->renglon);
+        print_Palabra(pal);
+        current = current->siguiente;
+    }
+    printf("\n");
 }
 
 typedef struct Entrada Entrada;
@@ -61,8 +92,7 @@ int main() {
     size_t tamanio;
 
     Palabra * cabeza=NULL;
-    Palabra * pal=NULL;
-
+    Renglon * head=NULL;
     int j=0;
 
     while (getline(&linea,&tamanio, stdin) != -1) {
@@ -70,16 +100,17 @@ int main() {
         int len = split(linea,palabras);
         int i;
         for (i = 0; i < len; i++) {
-            pal = (Palabra *) malloc(sizeof(Palabra));
+            Palabra * pal = (Palabra *) malloc(sizeof(Palabra));
             pal->siguiente = NULL;
             pal->numerocolumna = i;
             pal->numerofila = j;
+            pal->palabra = palabras[i];
             add_Lista(&cabeza,pal);
-            printf("palabra %d = %s\n", i, palabras[i]);
+            //printf("palabra %d = %s\n", i, palabras[i]);
         }
+        //print_Palabra(cabeza);
+        add_Renglon(&head,cabeza,j);
+        print_Renglon(head);
         j++;
     }
-
-
-
 }
